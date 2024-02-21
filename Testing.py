@@ -50,7 +50,7 @@ def load_point_cloud_data(file_path):
 
 
 
-UPLOAD_FOLDER = './uploads/'
+UPLOAD_FOLDER = './PointNet2_API/uploads'
 ALLOWED_EXTENSIONS = {'txt'}
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
@@ -67,7 +67,7 @@ m = importlib.import_module(model_name)
 model = m.get_model(40, normal_channel=False)
 
 
-checkpoint = torch.load('./log/classification/pointnet2_cls_ssg/checkpoints/best_model.pth', map_location='cpu')
+checkpoint = torch.load('./PointNet2_API/log/classification/pointnet2_cls_ssg/checkpoints/best_model.pth', map_location='cpu')
 start_epoch = checkpoint['epoch']
 model.load_state_dict(checkpoint['model_state_dict'])
 classifier = model.eval()
