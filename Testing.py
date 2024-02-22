@@ -11,6 +11,7 @@ import plotly.express as px
 from werkzeug.utils import secure_filename
 import json
 import plotly
+import pywavefront
 
 
 def load_point_cloud_data(file_path):
@@ -23,26 +24,17 @@ def load_point_cloud_data(file_path):
     for line in lines:
         # Split the line into individual values
         values = line.strip().split(',')
- 
-        try:
-            x, y, z,a,b,c = map(float, values[:6])
-        except ValueError:
-            continue
 
-        # x =  values[0]
-        # y =  values[1]
-        # z =  values[2]
-        # a =  values[3]
-        # b =  values[4]
-        # c =  values[5]
-        point = [x, y, z,a,b,c]
+        x, y, z = map(float, values[:3])
+ 
+        point = [x, y, z]
         points.append(point)
 
         points_arr = points
 
     points = np.array(points)
     # Reshape the points array to (24, 3, 1024)
-    points = np.resize(points, (24, 6, 1024))
+    points = np.resize(points, (24, 3, 1024))
 
     return points_arr
 
@@ -50,14 +42,14 @@ def load_point_cloud_data(file_path):
 
 
 
-UPLOAD_FOLDER = './PointNet2_API/uploads'
+UPLOAD_FOLDER = './PointNet2_API/uploads/'
 ALLOWED_EXTENSIONS = {'txt'}
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 
 
-sys.path.append(os.path.join('./Pointnet_Pointnet2_pytorch/models'))
+sys.path.append(os.path.join('./PointNet2_API/Pointnet_Pointnet2_pytorch/models'))
 
 
 
@@ -90,20 +82,39 @@ def upload_N_detect():
 
     if 'file' in request.files:
         file = request.files['file']
-        filename = secure_filename(file.filename)
+        # Get the list of files from webpage 
+        files = request.files.getlist("file") 
+  
+        # Iterate for each file in the files List, and Save them 
+        for file in files: 
+            file.save(UPLOAD_FOLDER+file.filename) 
 
-        # Here you should save the file
-        file_path = os.path.join(UPLOAD_FOLDER+str(filename))
-        # Remove leading whitespace before saving the file
-        content = file.read().decode('utf-8').lstrip()
+        # filename = secure_filename(file.filename)
 
-        with open(file_path, 'w') as f:
-            f.write(content)
+        # # Here you should save the file
+        # file_path = os.path.join(UPLOAD_FOLDER+str(filename))
+        # # Remove leading whitespace before saving the file
+        # content = file.read().decode('utf-8').lstrip()
 
+        # with open(file_path, 'w') as f:
+        #     f.write(content)
+
+        file_obj_nsme = os.listdir('./PointNet2_API/uploads')[1]
+        # file.save(UPLOAD_FOLDER+file.filename) 
+        print(os.listdir('./PointNet2_API/uploads'))
+        scene = pywavefront.Wavefront(UPLOAD_FOLDER+file_obj_nsme)
+        vertices = scene.vertices
+        df_obj= pd.DataFrame(vertices)
+        df_obj.to_csv('./obj.txt', sep=',', index=False,header=False)
 
         # points_arr = load_point_cloud_data(UPLOAD_FOLDER+"/"+str(filename))
+
+
+
+        file_path="./obj.txt"
         points_arr = load_point_cloud_data(file_path)
-        df = pd.DataFrame(points_arr, columns=['x', 'y', 'z','a','b','c'])
+
+        df = pd.DataFrame(points_arr, columns=['x', 'y', 'z'])
         fig = px.scatter_3d(df, x='x', y='y', z='z')
 
         fig.update_traces(marker=dict(size=2))
@@ -127,12 +138,12 @@ def upload_N_detect():
         tensor = torch.from_numpy(data)
         output, _ = classifier(tensor.float())
         pred_choice = output.data.max(1)
-        probabilities = F.softmax(pred_choice.values, dim=0)
+        # probabilities = F.softmax(pred_choice.values, dim=0)
 
 
 
         data = {
-        "probabilities":probabilities,
+        "probabilities":pred_choice[0],
         "class": pred_choice[1]
         }
         modelnet40_shape_names= ['airplane','bathtub','bed','bench', 
@@ -146,18 +157,19 @@ def upload_N_detect():
         df = pd.DataFrame(data)
         probabilities_Each_class = pd.DataFrame(df.groupby('class').sum())
 
-        print(probabilities_Each_class)
 
         sorted_probabilities_Each_class = probabilities_Each_class.sort_values(by='probabilities',ascending=False)
-        # modelnet40_shape_names[max_probabilities_class['class']]
-        print(modelnet40_shape_names[sorted_probabilities_Each_class.head(1).index.values[0]])
+        print(sorted_probabilities_Each_class)
+        predict_class = modelnet40_shape_names[sorted_probabilities_Each_class.head(1).index.values[0]]
+        print(predict_class)
+
+        # rm all files from ./PointNet2_API/uploads
+        for filename in os.listdir('./PointNet2_API/uploads'):
+            if os.path.isfile(os.path.join('./PointNet2_API/uploads', filename)):
+                os.remove(os.path.join('./PointNet2_API/uploads', filename))
 
 
-
-
-
-
-        return render_template('result.html',graphJSON=graphJSON,prediction = modelnet40_shape_names[sorted_probabilities_Each_class.head(1).index.values[0]])
+        return render_template('result.html',graphJSON=graphJSON,prediction = predict_class)
     else:
         return 'No file uploaded'
 
