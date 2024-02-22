@@ -105,13 +105,14 @@ def upload_N_detect():
         scene = pywavefront.Wavefront(UPLOAD_FOLDER+file_obj_nsme)
         vertices = scene.vertices
         df_obj= pd.DataFrame(vertices)
-        df_obj.to_csv('./obj.txt', sep=',', index=False,header=False)
+        file_path="./PointNet2_API/uploads/obj.txt"
+        df_obj.to_csv(file_path, sep=',', index=False,header=False)
 
         # points_arr = load_point_cloud_data(UPLOAD_FOLDER+"/"+str(filename))
 
 
 
-        file_path="./obj.txt"
+  
         points_arr = load_point_cloud_data(file_path)
 
         df = pd.DataFrame(points_arr, columns=['x', 'y', 'z'])
