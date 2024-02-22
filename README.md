@@ -11,6 +11,8 @@ You may access below website to generate point obj, but there are some rules to 
 
 
 Folder structure:
+
+```bash
 .
 ├── PointNet2_API
 │   ├── Pointnet_Pointnet2_pytorch
@@ -122,7 +124,7 @@ Folder structure:
 │   │   └── upload.html
 │   └── uploads
 ├── obj.txt
-
+```
 
 
 
