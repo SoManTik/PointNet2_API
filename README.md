@@ -5,7 +5,7 @@ web_application of PointNet2
 You may access below website to generate point obj, but there are some rules to must follow it:
     1.The generation of 3D point cloud shd be retopology.
     2.select low ooption for the generation since the model was trained on ModelNet40, each obj approximately contain 10000 points. Therefore, middle and high option will create high quality and size that is NOT suitable for the model.
-    3.cd PointNet2_API/
+    3.```cd PointNet2_API/```
     4.git clone https://github.com/yanx27/Pointnet_Pointnet2_pytorch
     
 
