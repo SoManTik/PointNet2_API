@@ -108,11 +108,9 @@ def upload_N_detect():
         file_path="./PointNet2_API/uploads/obj.txt"
         df_obj.to_csv(file_path, sep=',', index=False,header=False)
 
-        # points_arr = load_point_cloud_data(UPLOAD_FOLDER+"/"+str(filename))
 
 
 
-  
         points_arr = load_point_cloud_data(file_path)
 
         df = pd.DataFrame(points_arr, columns=['x', 'y', 'z'])
