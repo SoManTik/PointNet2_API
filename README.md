@@ -14,6 +14,9 @@ cd PointNet2_API/
 git clone https://github.com/yanx27/Pointnet_Pointnet2_pytorch
 ```
 
+5. run main.py
+
+
 
 Folder structure:
 
