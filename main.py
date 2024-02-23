@@ -89,15 +89,6 @@ def upload_N_detect():
         for file in files: 
             file.save(UPLOAD_FOLDER+file.filename) 
 
-        # filename = secure_filename(file.filename)
-
-        # # Here you should save the file
-        # file_path = os.path.join(UPLOAD_FOLDER+str(filename))
-        # # Remove leading whitespace before saving the file
-        # content = file.read().decode('utf-8').lstrip()
-
-        # with open(file_path, 'w') as f:
-        #     f.write(content)
 
         file_arr = os.listdir('./PointNet2_API/uploads')
         file_obj_name = [string for string in file_arr if ".obj" in string]
