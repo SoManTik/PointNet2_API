@@ -135,7 +135,7 @@ def upload_N_detect():
 
 
         data = {
-        "probabilities":pred_choice[0],
+        "score":pred_choice[0],
         "class": pred_choice[1]
         }
         modelnet40_shape_names= ['airplane','bathtub','bed','bench', 
@@ -150,7 +150,7 @@ def upload_N_detect():
         probabilities_Each_class = pd.DataFrame(df.groupby('class').sum())
 
 
-        sorted_probabilities_Each_class = probabilities_Each_class.sort_values(by='probabilities',ascending=False)
+        sorted_probabilities_Each_class = probabilities_Each_class.sort_values(by='score',ascending=False)
         print(sorted_probabilities_Each_class)
         predict_class = modelnet40_shape_names[sorted_probabilities_Each_class.head(1).index.values[0]]
         print(predict_class)
