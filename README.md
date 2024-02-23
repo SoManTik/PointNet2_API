@@ -6,7 +6,7 @@ You can access below website to generate point obj, but there are some rules you
 
 1. The generation of 3D point cloud should be retopology from https://lumalabs.ai.
 
-2. Please to select low option for generation, as the model was trained on ModelNet40, each obj contains approximately 10000 points. Therefore, middle and high options will generate high quality and size which is NOT suitable for the model.
+2. Please upload .obj and .mtl at the same time.
 
 3. Please clone the repository first.
 ```bash
