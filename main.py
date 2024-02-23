@@ -125,7 +125,10 @@ def upload_N_detect():
                 values = line.strip().split(',')
 
                 # Convert the values to floats and assign them to the data array
-                data[i // 1024, :, i % 1024] = [float(value) for value in values[:3]]
+                try:
+                    data[i // 1024, :, i % 1024] = [float(value) for value in values[:3]]
+                except Exception:
+                    pass
 
         tensor = torch.from_numpy(data)
         output, _ = classifier(tensor.float())
@@ -138,12 +141,15 @@ def upload_N_detect():
         "score":pred_choice[0],
         "class": pred_choice[1]
         }
-        modelnet40_shape_names= ['airplane','bathtub','bed','bench', 
-                                'bookshelf', 'bottle' ,'bowl' ,'car','chair','cone',
-                                'cup','curtain','desk','door','dresser','flower_pot','glass_box',
-                                'guitar','keyboard','lamp','laptop','mantel','monitor','night_stand',
-                                'person','piano','plant','radio','range_hood','sink','sofa','stairs',
-                                'stool','table','tent','toilet','tv_stand','vase','wardrobe','xbox']
+        modelnet40_shape_names= ['airplane','bathtub','bed','bench', 'bookshelf', 
+                                 'bottle' ,'bowl' ,'car','chair','cone',
+                                'cup','curtain','desk','door','dresser',
+                                'flower_pot','glass_box','guitar','keyboard','lamp',
+                                'laptop','mantel','monitor','night_stand',
+                                'person','piano','plant','radio','range_hood',
+                                'sink','sofa','stairs','stool','table',
+                                'tent','toilet','tv_stand','vase',
+                                'wardrobe','xbox']
 
         #load data into a DataFrame object:
         df = pd.DataFrame(data)
