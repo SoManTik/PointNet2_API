@@ -85,10 +85,12 @@ def upload_N_detect():
         # Get the list of files from webpage 
         files = request.files.getlist("file") 
   
-        # Iterate for each file in the files List, and Save them 
-        for file in files: 
-            file.save(UPLOAD_FOLDER+file.filename) 
-
+        try:
+            # Iterate for each file in the files List, and Save them 
+            for file in files: 
+                file.save(UPLOAD_FOLDER+file.filename) 
+        except Exception:
+            return "<h1>No files uploaded</h1>"
 
         file_arr = os.listdir('./PointNet2_API/uploads')
         file_obj_name = [string for string in file_arr if ".obj" in string]
