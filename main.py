@@ -99,13 +99,15 @@ def upload_N_detect():
         # with open(file_path, 'w') as f:
         #     f.write(content)
 
-        file_obj_nsme = os.listdir('./PointNet2_API/uploads')[1]
+        file_arr = os.listdir('./PointNet2_API/uploads')
+        file_obj_name = [string for string in file_arr if ".obj" in string]
+        print("file_obj_name",file_obj_name)
         # file.save(UPLOAD_FOLDER+file.filename) 
         print(os.listdir('./PointNet2_API/uploads'))
-        scene = pywavefront.Wavefront(UPLOAD_FOLDER+file_obj_nsme)
+        scene = pywavefront.Wavefront(UPLOAD_FOLDER+file_obj_name[0])
         vertices = scene.vertices
         df_obj= pd.DataFrame(vertices)
-        file_path="./PointNet2_API/uploads/obj.txt"
+        file_path="./PointNet2_API/uploads/uploaded.txt"
         df_obj.to_csv(file_path, sep=',', index=False,header=False)
 
 
@@ -164,6 +166,8 @@ def upload_N_detect():
 
         # rm all files from ./PointNet2_API/uploads
         for filename in os.listdir('./PointNet2_API/uploads'):
+            if filename == 'uploaded.txt':
+                break
             if os.path.isfile(os.path.join('./PointNet2_API/uploads', filename)):
                 os.remove(os.path.join('./PointNet2_API/uploads', filename))
 
