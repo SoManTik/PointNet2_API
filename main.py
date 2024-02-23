@@ -94,9 +94,8 @@ def upload_N_detect():
 
         file_arr = os.listdir('./PointNet2_API/uploads')
         file_obj_name = [string for string in file_arr if ".obj" in string]
-        print("file_obj_name",file_obj_name)
-        # file.save(UPLOAD_FOLDER+file.filename) 
-        print(os.listdir('./PointNet2_API/uploads'))
+
+
         scene = pywavefront.Wavefront(UPLOAD_FOLDER+file_obj_name[0])
         vertices = scene.vertices
         df_obj= pd.DataFrame(vertices)
@@ -132,10 +131,11 @@ def upload_N_detect():
                 except Exception:
                     pass
 
+
         tensor = torch.from_numpy(data)
         output, _ = classifier(tensor.float())
         pred_choice = output.data.max(1)
-        # probabilities = F.softmax(pred_choice.values, dim=0)
+        # probabilities = F.softmax(pred_choice.values, dim=-1)
 
 
 
@@ -161,8 +161,7 @@ def upload_N_detect():
         sorted_probabilities_Each_class = probabilities_Each_class.sort_values(by='score',ascending=False)
         print(sorted_probabilities_Each_class)
         predict_class = modelnet40_shape_names[sorted_probabilities_Each_class.head(1).index.values[0]]
-        print(predict_class)
-
+ 
         # rm all files from ./PointNet2_API/uploads
         for filename in os.listdir('./PointNet2_API/uploads/'):
   
