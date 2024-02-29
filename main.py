@@ -100,6 +100,10 @@ def upload_N_detect():
         vertices = scene.vertices
         df_obj= pd.DataFrame(vertices)
         file_path="./uploads/txt/uploaded.txt"
+        df_obj = df_obj.to_numpy()
+        if len(df_obj)>10000:
+            df_obj = df_obj[np.random.choice(len(df_obj), 10000, replace=False)]
+        df_obj = pd.DataFrame(df_obj)
         df_obj.to_csv(file_path, sep=',', index=False,header=False)
 
 
@@ -135,12 +139,12 @@ def upload_N_detect():
         tensor = torch.from_numpy(data)
         output, _ = classifier(tensor.float())
         pred_choice = output.data.max(1)
-        # probabilities = F.softmax(pred_choice.values, dim=-1)
+        probabilities = F.softmax(pred_choice.values, dim=0)
 
 
 
         data = {
-        "score":pred_choice[0],
+        "score":probabilities,
         "class": pred_choice[1]
         }
         modelnet40_shape_names= ['airplane','bathtub','bed','bench', 'bookshelf', 
