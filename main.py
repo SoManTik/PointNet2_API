@@ -135,10 +135,10 @@ def upload_N_detect():
         point_cloud = pc_normalize(point_cloud)
         point_cloud = farthest_point_sample(point_cloud,len(point_cloud))
 
-        # if len(df_obj)>10000:
-        #     df_obj = df_obj[np.random.choice(len(df_obj), 10000, replace=False)]
+        # if len(point_cloud)>10000:
+        #       point_cloud = point_cloud[np.random.choice(len(point_cloud), 10000, replace=False)]
         df_obj = pd.DataFrame(point_cloud)
-        print(df_obj)
+
         df_obj.to_csv(file_path, sep=',', index=False,header=False)
 
 
