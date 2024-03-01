@@ -14,6 +14,37 @@ import plotly
 import pywavefront
 
 
+def pc_normalize(pc):
+    centroid = np.mean(pc, axis=0)
+    pc = pc - centroid
+    m = np.max(np.sqrt(np.sum(pc**2, axis=1)))
+    pc = pc / m
+    return pc
+
+def farthest_point_sample(point, npoint):
+    """
+    Input:
+        xyz: pointcloud data, [N, D]
+        npoint: number of samples
+    Return:
+        centroids: sampled pointcloud index, [npoint, D]
+    """
+    N, D = point.shape
+    xyz = point[:,:3]
+    centroids = np.zeros((npoint,))
+    distance = np.ones((N,)) * 1e10
+    farthest = np.random.randint(0, N)
+    for i in range(npoint):
+        centroids[i] = farthest
+        centroid = xyz[farthest, :]
+        dist = np.sum((xyz - centroid) ** 2, -1)
+        mask = dist < distance
+        distance[mask] = dist[mask]
+        farthest = np.argmax(distance, -1)
+    point = point[centroids.astype(np.int32)]
+    return point
+
+
 def load_point_cloud_data(file_path):
     # Load the data from the .txt file
     with open(file_path, 'r') as file:
@@ -100,10 +131,14 @@ def upload_N_detect():
         vertices = scene.vertices
         df_obj= pd.DataFrame(vertices)
         file_path="./uploads/txt/uploaded.txt"
-        df_obj = df_obj.to_numpy()
-        if len(df_obj)>10000:
-            df_obj = df_obj[np.random.choice(len(df_obj), 10000, replace=False)]
-        df_obj = pd.DataFrame(df_obj)
+        point_cloud = df_obj.to_numpy()
+        point_cloud = pc_normalize(point_cloud)
+        point_cloud = farthest_point_sample(point_cloud,len(point_cloud))
+
+        # if len(df_obj)>10000:
+        #     df_obj = df_obj[np.random.choice(len(df_obj), 10000, replace=False)]
+        df_obj = pd.DataFrame(point_cloud)
+        print(df_obj)
         df_obj.to_csv(file_path, sep=',', index=False,header=False)
 
 
@@ -144,7 +179,7 @@ def upload_N_detect():
 
 
         data = {
-        "score":probabilities,
+        "score":pred_choice[0],
         "class": pred_choice[1]
         }
         modelnet40_shape_names= ['airplane','bathtub','bed','bench', 'bookshelf', 
