@@ -12,6 +12,11 @@ from werkzeug.utils import secure_filename
 import json
 import plotly
 import pywavefront
+import numpy as np
+import matplotlib.pyplot as plt
+from mpl_toolkits import mplot3d
+import open3d as o3d
+import plotly.graph_objects as go
 
 
 def pc_normalize(pc):
@@ -151,8 +156,45 @@ def upload_N_detect():
 
         fig.update_traces(marker=dict(size=2))
 
-        # Create graphJSON
+        # Create graphJSON point cloud
         graphJSON = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
+
+        mesh = o3d.io.read_triangle_mesh(UPLOAD_FOLDER+file_obj_name[0])
+
+
+        triangles = np.asarray(mesh.triangles)
+        vertices = np.asarray(mesh.vertices)
+        colors = None
+        if mesh.has_triangle_normals():
+            colors = (0.5, 0.5, 0.5) + np.asarray(mesh.triangle_normals) * 0.5
+            colors = tuple(map(tuple, colors))
+        else:
+            colors = (1.0, 0.0, 0.0)
+
+        fig = go.Figure(
+            data=[
+            
+                go.Mesh3d(
+                    x=vertices[:,0],
+                    y=vertices[:,1],
+                    z=vertices[:,2],
+                    i=triangles[:,0],
+                    j=triangles[:,1],
+                    k=triangles[:,2],
+                    facecolor=colors,
+                    opacity=0.50)
+            ],
+            layout=dict(
+                scene=dict(
+                    xaxis=dict(visible=False),
+                    yaxis=dict(visible=False),
+                    zaxis=dict(visible=False)
+                )
+            )
+        )
+        graphJSON_with_texture = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
+
+
         
 
 
@@ -209,7 +251,7 @@ def upload_N_detect():
                 os.remove(os.path.join('./uploads', filename))
 
 
-        return render_template('result.html',graphJSON=graphJSON,prediction = predict_class)
+        return render_template('result.html',graphJSON=graphJSON, graphJSON_with_texture= graphJSON_with_texture, prediction = predict_class)
     else:
         return 'No file uploaded'
 

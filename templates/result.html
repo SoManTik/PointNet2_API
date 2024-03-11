@@ -19,6 +19,7 @@ body {
  <body>
   <h1>Point Cloud shape classification:</h1>
   <div id='chart' class='chart'”></div>
+  <div id='chart_with_texture' class='chart'”></div>
   <h1>The prediction: {{prediction}}.</h1>
 </body>
  
@@ -26,6 +27,12 @@ body {
 <script type='text/javascript'>
   var graphs = {{graphJSON | safe}};
   Plotly.plot('chart',graphs,{});
+
+</script>
+
+<script type='text/javascript'>
+  var graphs = {{graphJSON_with_texture | safe}};
+  Plotly.plot('chart_with_texture',graphs,{});
 
 </script>
 </html>
