@@ -10,6 +10,7 @@ You can access below website to generate point obj, but there are some rules you
 
 3. Please clone the repository first.
 ```bash
+pip install open3d
 cd PointNet2_API/
 ```
 
