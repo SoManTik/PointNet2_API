@@ -165,6 +165,9 @@ def upload_N_detect():
         triangles = np.asarray(mesh.triangles)
         vertices = np.asarray(mesh.vertices)
         colors = None
+        if mesh.is_empty(): exit()
+        if not mesh.has_vertex_normals(): mesh.compute_vertex_normals()
+        if not mesh.has_triangle_normals(): mesh.compute_triangle_normals()
         if mesh.has_triangle_normals():
             colors = (0.5, 0.5, 0.5) + np.asarray(mesh.triangle_normals) * 0.5
             colors = tuple(map(tuple, colors))
