@@ -13,8 +13,6 @@ import json
 import plotly
 import pywavefront
 import numpy as np
-import matplotlib.pyplot as plt
-from mpl_toolkits import mplot3d
 import open3d as o3d
 import plotly.graph_objects as go
 
@@ -263,7 +261,5 @@ if __name__ == '__main__':
  
     # run() method of Flask class runs the application 
     # on the local development server.
-    app.run(host="localhost", port=3000, debug=False)
-
-
+    app.run(debug=True,host="0.0.0.0",port=3000)
 
