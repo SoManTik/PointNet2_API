@@ -130,7 +130,7 @@ def upload_N_detect():
         file_obj_name = [string for string in file_arr if ".obj" in string]
 
 
-        scene = pywavefront.Wavefront(UPLOAD_FOLDER+file_obj_name[0])
+        scene = pywavefront.Wavefront(UPLOAD_FOLDER+file_obj_name[0],collect_faces=True)
         vertices = scene.vertices
         df_obj= pd.DataFrame(vertices)
         file_path="./uploads/txt/uploaded.txt"
