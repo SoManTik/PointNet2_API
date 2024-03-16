@@ -130,7 +130,7 @@ def upload_N_detect():
         file_obj_name = [string for string in file_arr if ".obj" in string]
 
 
-        scene = pywavefront.Wavefront(UPLOAD_FOLDER+file_obj_name[0],collect_faces=True)
+        scene = pywavefront.Wavefront(UPLOAD_FOLDER+file_obj_name[0])
         vertices = scene.vertices
         df_obj= pd.DataFrame(vertices)
         file_path="./uploads/txt/uploaded.txt"
@@ -261,5 +261,5 @@ if __name__ == '__main__':
  
     # run() method of Flask class runs the application 
     # on the local development server.
-    app.run(debug=True,host="0.0.0.0",port=3000)
+    app.run(debug=False,host="0.0.0.0",port=3000)
 
